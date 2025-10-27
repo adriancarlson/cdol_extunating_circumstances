@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        ~[wc:commonscripts]
+        <link href="/images/css/screen.css" rel="stylesheet" media="screen">
+        <link href="/images/css/print.css" rel="stylesheet" media="print">
+    </head>
+
+    <body>
+        ~[wc:admin_header_frame_css]
+        ~[wc:admin_navigation_frame_css]
+        ~[wc:changes_saved_or_deleted_header]
+        ~[wc:title_student_begin_css]Extenuating Circumstances~[wc:title_student_end_css]
+        <form action="/~[self]~[if.gpv.recordSaved=]&recordSaved=1[/if]" method="POST">
+
+            <div class="box-round">
+                <table>
+                    <tr bgcolor="#f6f6f6">
+                        <td colspan="2"><strong>Extenuating Circumstances Letter?</strong></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td><input title="Extenuating Absences" type="checkbox"
+                                name="[students.U_STUDENT_ADDITIONAL_INFO]EXTENUATING_ABSENCES"
+                                value="0"><strong>Absences</strong></td>
+                    </tr>
+                    <tr class="~[evenoddrow]">
+                        <td><input title="Extenuating Tardies" type="checkbox"
+                                name="[students.U_STUDENT_ADDITIONAL_INFO]EXTENUATING_TARDIES"
+                                value="0"><strong>Tardies</strong></td>
+                    </tr>
+                </table>
+                <div class="button-row"><input type="hidden" name="ac" value="prim">~[submitbutton]</div>
+            </div>
+        </form>
+        ~[wc:admin_footer_frame_css]
+    </body>
+
+</html>

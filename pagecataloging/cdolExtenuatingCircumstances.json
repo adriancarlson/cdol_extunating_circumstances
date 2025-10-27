@@ -1,0 +1,14 @@
+{
+	"pages": [
+		{
+			"htmlID": "cdol-extenuating-circumstances",
+			"title": "Extenuating Circumstances",
+			"pageURL": "~[if.~(decode;~(curschoolid);0;disp;101;disp;nodisp)=disp]/admin/students/extenuating_circumstances.html?frn=~(studentfrn)[/if]",
+			"version": "0",
+			"contextType": "student",
+			"districtLevelContext": 0,
+			"sortOrder": 400,
+			"parentHTMLID": "navStudentAttendanceSection"
+		}
+	]
+}
