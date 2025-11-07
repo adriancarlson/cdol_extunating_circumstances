@@ -9,6 +9,16 @@
 			"districtLevelContext": 0,
 			"sortOrder": 400,
 			"parentHTMLID": "navStudentAttendanceSection"
+		},
+		{
+			"htmlID": "cdol-extenuating-circumstances-list",
+			"title": "Extenuating Circumstances List",
+			"pageURL": "~[if.~(decode;~(curschoolid);0;disp;101;disp;nodisp)=disp]/admin/studentlist/extenuating_circumstances/extenuating_circumstances_list.html[/if]",
+			"version": "0",
+			"contextType": "main",
+			"districtLevelContext": 0,
+			"sortOrder": 1000,
+			"parentHTMLID": "navAttendanceAttendanceReports"
 		}
 	]
 }

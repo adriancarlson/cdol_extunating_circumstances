@@ -103,24 +103,12 @@
     <body>
         ~[wc:admin_header_css]
         ~[wc:admin_navigation_css]
-        <div id="extenuating-circumstances-app-div" data-require-path="components/shared/index"
-            data-module-name="extenuatingCircumstancesMod" data-ng-controller="extenuatingCircumstancesCtrl"
-            data-ng-cur-school-id="~(curschoolid)" data-ng-cloak>
-            <h1 class="mb-1">Extenuating Circumstances Student List</h1>
-            <div id="noTimer" pss-feedback-widget success="getSuccessMessages()"></div>
-            <div class="btn-toolbar justify-content-between ms-3 me-4" role="toolbar" data-ng-show="!mainSpinner">
-                <div class="input-group">
-                    <button data-ng-click="addCollapsedClass('studentsHeader', 'students')"
-                        data-ng-disabled="curSelectionCounts.students < 1">
-                        Load Currently Selected Students ({{curSelectionCounts.students}})
-                    </button>
-                </div>
+        <h1>Extenuating Circumstances Student List</h1>
+        <div data-require-path="./extenuatingCircumstances.js" data-module-name="ecModule"
+            data-ng-cur-school-id="~(curschoolid)" data-bootstrap-local="true" data-ng-cloak>
+            <div class="box-round" data-ng-controller="ecCtrl as vm">
+                {{vm.extenuatingCircumstancesList}}
             </div>
-            <div id="wait-spinner-div" data-ng-show="mainSpinner" class="m-3">
-                <div data-pss-wait-spinner="large" style="background-color: transparent;"></div>
-            </div>
-            <student-list id="tabstudents" data-ng-show="userType === 'students'"></student-list>
-            <user-list id="tabusers" data-ng-show="userType === 'users'"></user-list>
         </div>
         ~[wc:admin_footer_css]
     </body>
