@@ -1,0 +1,23 @@
+~[tlist_sql;
+	SELECT
+		COALESCE(
+			JSON_ARRAYAGG(
+				JSON_OBJECT(
+					students.dcid,
+					students.student_number,
+					students.lastfirst,
+					students.grade_level,
+					u_student_additional_info.extenuating_absences,
+					u_student_additional_info.extenuating_tardies
+					NULL ON NULL
+				)
+				RETURNING CLOB
+			),
+		TO_CLOB(CHR(91)||CHR(93)))
+	FROM students
+	LEFT JOIN u_student_additional_info
+	ON students.dcid = u_student_additional_info.studentsdcid
+	WHERE ~(curschoolid) IN (0, students.schoolid)
+	AND (u_student_additional_info.extenuating_absences = 1 OR u_student_additional_info.extenuating_tardies = 1)
+	AND students.enroll_status = 0
+;]~(val)[/tlist_sql]

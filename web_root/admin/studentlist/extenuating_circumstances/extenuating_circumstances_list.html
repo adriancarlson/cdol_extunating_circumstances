@@ -12,102 +12,81 @@
         <link href="/images/css/print.css?~[time]" rel="stylesheet" media="print">
         <link href="/images/css/cdol.css?~[time]" rel="stylesheet" media="screen">
         <link href="/images/css/cdol_print.css?~[time]" rel="stylesheet" media="print">
-        <script type="text/javascript">
-            require(['angular', 'components/shared/index'], function (angular) {
-                let extenuatingCircumstances = angular.module('extenuatingCircumstances', ['powerSchoolModule']);
-                extenuatingCircumstances.controller('extenuatingCircumstancesCtrl', function ($scope, $http) {
-                    //This is here for troubleshooting purposes.
-                    //Allows us to double click anywhere on the page and logs scope to console
-                    $j(document).dblclick(() => console.log($scope));
-
-                    $scope.curSchoolId = $attrs.ngCurSchoolId
-                    // $scope.loadData = async => {
-                    //     loadingDialog()
-                    //     $scope.mainSpinner = true
-                    //     $scope.extenuatingCircumstancesCounts = {}
-                    //     $scope.extenuatingCircumstancesList = {}
-                    //     $scope.curSelectionCounts = {}
-                    //     $scope.curSelection = {}
-                    //     $scope.curSelectionDcids = {}
-                    //     $scope.selectedRemoveStudentDcids = []
-                    //     $scope.useHandStudentSelectionRemove = false
-                    //     $scope.selectedAddStudent = []
-                    //     $scope.selectedAddStudentDcids = []
-                    //     $scope.useHandStudentSelectionAdd = false
-                    //     $scope.showAddStudentTable = false
-
-                    //     //setting up arguments for PQ call
-                    //     const pqData = { schoolID: $scope.curSchoolId }
-
-                    //     const removeDuplicates = records => {
-                    //         // Use reduce to accumulate records by dcid
-                    //         const uniqueRecords = records.reduce((acc, record) => {
-                    //             // If the dcid is not in the accumulator, or the current record's ssdcid is higher, update the accumulator
-                    //             if (!acc[record.dcid] || acc[record.dcid].ssdcid < record.ssdcid) {
-                    //                 acc[record.dcid] = record
-                    //             }
-                    //             return acc
-                    //         }, {})
-
-                    //         // Convert the accumulator object back into an array
-                    //         return Object.values(uniqueRecords)
-                    //     }
-
-                    //     // getting existing users with license
-                    //     let res = await pqService.getPQResults(`net.cdolinc.powerschool.attendance.extenuating_circumstances`, pqData)
-                    //     res = removeDuplicates(res)
-                    //     $scope.extenuatingCircumstancesList = res
-                    //     $scope.extenuatingCircumstancesList = Object.values(
-                    //         $scope.extenuatingCircumstancesList.reduce((acc, record) => {
-                    //             // If the dcid is not in the accumulator, or the current record's ssdcid is higher, update the accumulator
-                    //             if (!acc[record.dcid] || acc[record.dcid].ssdcid < record.ssdcid) {
-                    //                 acc[record.dcid] = record
-                    //             }
-                    //             return acc
-                    //         }, {})
-                    //     )
-                    //     // Calculate the number of records where license_adobe == '1'
-                    //     $scope.extenuatingCircumstancesCounts = $scope.extenuatingCircumstancesCounts || {}
-
-                    //     // getting current selection
-                    //     let curSelectRes = await pqService.getPQResults(`net.cdolinc.powerschool.${userType}.licensing`, pqData, true)
-                    //     curSelectRes = removeDuplicates(curSelectRes)
-                    //     if (curSelectRes.length > 0) {
-                    //         $scope.curSelection[userType] = curSelectRes
-                    //         $scope.curSelectionCounts[userType] = $scope.curSelection[userType].length
-                    //         $scope[`selectedAdd${userType}`] = []
-                    //         $scope[`selectedAdd${userType}Dcids`] = []
-                    //         $scope.curSelectionDcids[userType] = []
-                    //         angular.forEach($scope.curSelection[userType], function (user) {
-                    //             user.selectToAdd = true
-                    //             $scope[`selectedAdd${userType}`].push(user)
-                    //             $scope[`selectedAdd${userType}Dcids`].push(user.dcid)
-                    //             $scope.curSelectionDcids[userType].push(user.dcid)
-                    //             $scope.selectAllAddChecked = true
-                    //         })
-                    //     } else {
-                    //         $scope.curSelection[userType] = {}
-                    //         $scope.curSelectionCounts[userType] = 0
-                    //     }
-                    //     $scope.mainSpinner = false
-                    //     $scope.$digest()
-                    //     closeLoading()
-                    // }
-
-
-                }); //End Controller
-            }); //End Require
-        </script>
     </head>
 
     <body>
         ~[wc:admin_header_css]
         ~[wc:admin_navigation_css]
         <h1>Extenuating Circumstances Student List</h1>
-        <div data-require-path="./extenuatingCircumstances.js" data-module-name="ecModule"
-            data-ng-cur-school-id="~(curschoolid)" data-bootstrap-local="true" data-ng-cloak>
-            <div class="box-round" data-ng-controller="ecCtrl as vm">
-                {{vm.extenuatingCircumstancesList}}
+        <div id="BootcampApp" data-require-path="./extenuatingCircumstances.js" data-module-name="extCirModule"
+            data-bootstrap-local="true" ng-controller="extCirController as vm">
+            <div class="center" ng-show="false">
+                <div class="progress" data-pss-wait-spinner=""></div><br />Loading
+            </div>
+            <div class="box-round" ng-cloak>
+                <div class="feedback-note" ng-show="!vm.stuData.length">No Students with Extenuating
+                    Circumstances</div>
+                <div class="container-fluid" ng-show="vm.stuData.length">
+                    <div class="row">
+                        <div class="col-auto me-auto"><strong><span>Total:
+                                    {{vm.stuData.length}}</span> <span>Selected:
+                                    {{ (vm.stuData | filter:{selected:true}).length }}</span></strong>
+                        </div>
+                        <div class="col-auto me-2">
+                            <button ng-disabled="!vm.countSelectedWith('extenuating_absences')"
+                                ng-click="vm.clearSelected('Absences')">Clear Extenuating
+                                Absences ({{ vm.countSelectedWith('extenuating_absences') }})</button>
+                            <button ng-disabled="!vm.countSelectedWith('extenuating_tardies')"
+                                ng-click="vm.clearSelected('Tardies')">Clear Extenuating Tardies
+                                ({{ vm.countSelectedWith('extenuating_tardies') }})</button>
+                            <button ng-disabled="!vm.countSelected()" ng-click="vm.clearSelected()">Clear All
+                                Extenuating Circumstances ({{ vm.countSelected() }})</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-0" ng-show="vm.stuData.length" data-pss-grid-widget data-data="vm.stuData"
+                    data-filtered-data="pagedData" data-filter-constraint="no-filters">
+                    <table class="grid" ng-show="vm.stuData.length">
+                        <thead>
+                            <tr>
+                                <th style="width: 1px;">
+                                    <input type="checkbox" ng-model="vm.allSelected" ng-change="vm.toggleAll()" />
+                                </th>
+                                <th data-pss-sort-fields="student_number">Student Number
+                                </th>
+                                <th data-pss-sort-fields="lastfirst" data-primary-sort="ascending">Student Name</th>
+                                <th data-pss-sort-fields="grade_level">Grade Level</th>
+                                <th data-pss-sort-fields="extenuating_absences">Extenuating Absences
+                                </th>
+                                <th data-pss-sort-fields="extenuating_tardies">Extenuating Tardies
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="stu in pagedData track by stu.dcid">
+                                <td>
+                                    <input type="checkbox" ng-model="stu.selected" />
+                                </td>
+                                <td><a href="/admin/students/extenuating_circumstances.html?frn=001{{stu.dcid}}"
+                                        target="_blank">{{stu.student_number}}</a>
+                                </td>
+                                <td>{{stu.lastfirst}}</td>
+                                <td class="center">{{stu.grade_level}}</td>
+                                <td class="center"><span
+                                        data-ng-class="{'mark-complete': stu.extenuating_absences, 'mark-incomplete': !stu.extenuating_absences}"></span>
+                                </td>
+                                <td class="center"><span
+                                        data-ng-class="{'mark-complete': stu.extenuating_tardies, 'mark-incomplete': !stu.extenuating_tardies}"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="hide" id="dialogContainer">
+            <div id="editDiv">
+                content
             </div>
         </div>
         ~[wc:admin_footer_css]
