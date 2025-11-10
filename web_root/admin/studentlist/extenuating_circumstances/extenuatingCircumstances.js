@@ -5,8 +5,16 @@ define(['angular', 'components/shared/powerschoolModule', 'components/cdolServic
 
 	extCirModule.controller('extCirController', function ($http, $q, formatService) {
 		const vm = this
+		//This is here for troubleshooting purposes.
+		//Allows us to double click anywhere on the page and logs vm to console
+		$j(document).dblclick(() => console.log(vm))
+
+		// Initialize stuData as empty array to prevent flash of "No Students" message
+		vm.stuData = []
+		vm.loading = true
 
 		vm.loadData = () => {
+			vm.loading = true
 			vm.allSelected = true
 			const preload = {
 				stuData: $http.get('data/extenuatingCircumstances.json')
@@ -14,6 +22,7 @@ define(['angular', 'components/shared/powerschoolModule', 'components/cdolServic
 
 			$q.all(preload).then(preload => {
 				vm.stuData = preload.stuData?.data ?? []
+				vm.loading = false
 				vm.stuData.forEach(stu => {
 					stu.selected = true
 				})
@@ -40,7 +49,7 @@ define(['angular', 'components/shared/powerschoolModule', 'components/cdolServic
 			let selectedStudents = vm.stuData.filter(s => s.selected && (type === 'Absences' ? s.extenuating_absences : type === 'Tardies' ? s.extenuating_tardies : true))
 
 			let dialogContent = null
-			let dialogMessage = `Are you sure you want to clear the selected extenuating ${type ? type : 'Circumstances'} for ${selectedStudents.length} students?`
+			vm.dialogMessage = `Are you sure you want to clear the selected Extenuating ${type ? type : 'Circumstances'} for ${selectedStudents.length} students?`
 			dialogContent = $j('#editDiv').detach()
 
 			psDialog({
@@ -49,22 +58,31 @@ define(['angular', 'components/shared/powerschoolModule', 'components/cdolServic
 				type: 'dialogM',
 				draggable: true,
 				buttons: [
-					{ id: 'cancelEditBtn', text: 'Cancel', click: () => psDialogClose() },
+					{
+						id: 'cancelEditBtn',
+						text: 'Cancel',
+						click: () => {
+							psDialogClose()
+							vm.dialogMessage = ''
+						}
+					},
 					{
 						id: 'saveEditBtn',
-						text: 'Save',
+						text: 'Confirm',
 						click: () => {
 							loadingDialog()
 							let recordsProcessed = 0
-
 							setLoadingDialogTitle(`${recordsProcessed} of ${selectedStudents.length}`)
+
 							const updatePromises = selectedStudents.map(stu => {
-								console.log('totalRecs:', selectedStudents.length, 'recordsProcessed:', recordsProcessed)
 								let payload = { tables: { u_student_additional_info: {} } }
+
 								const fields = type === 'Absences' ? ['extenuating_absences'] : type === 'Tardies' ? ['extenuating_tardies'] : ['extenuating_absences', 'extenuating_tardies']
+
 								fields.forEach(f => {
 									payload.tables.u_student_additional_info[f] = formatService.formatChecksForApi(false)
 								})
+
 								return $http({
 									url: `/ws/schema/table/u_student_additional_info/${stu.dcid}`,
 									method: 'PUT',
@@ -72,13 +90,16 @@ define(['angular', 'components/shared/powerschoolModule', 'components/cdolServic
 									headers: { 'Content-Type': 'application/json' }
 								}).then(() => {
 									recordsProcessed++
-									updateLoadingDialogPercentComplete(recordsProcessed)
+									setLoadingDialogTitle(`${recordsProcessed} of ${selectedStudents.length}`)
+									let pct = Math.round((recordsProcessed / selectedStudents.length) * 100)
+									updateLoadingDialogPercentComplete(pct)
 								})
 							})
 
 							$q.all(updatePromises).then(() => {
 								closeLoading()
 								psDialogClose()
+								vm.dialogMessage = ''
 								vm.loadData()
 							})
 						}

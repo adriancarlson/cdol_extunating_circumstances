@@ -21,10 +21,12 @@
         <div id="BootcampApp" data-require-path="./extenuatingCircumstances.js" data-module-name="extCirModule"
             data-bootstrap-local="true" ng-controller="extCirController as vm">
             <div class="center" ng-show="false">
-                <div class="progress" data-pss-wait-spinner=""></div><br />Loading
+                <div class="progress" data-pss-wait-spinner="large" style="background-color: transparent;"></div>
+                <br /><strong>Loading...</strong>
             </div>
             <div class="box-round" ng-cloak>
-                <div class="feedback-note" ng-show="!vm.stuData.length">No Students with Extenuating
+                <div class="feedback-note" ng-show="!vm.loading && !vm.stuData.length" ng-cloak>No Students with
+                    Extenuating
                     Circumstances</div>
                 <div class="container-fluid" ng-show="vm.stuData.length">
                     <div class="row">
@@ -83,12 +85,13 @@
                     </table>
                 </div>
             </div>
-        </div>
-        <div class="hide" id="dialogContainer">
-            <div id="editDiv">
-                content
+            <div class="hide" id="dialogContainer">
+                <div id="editDiv" class="mx-2 my-3">
+                    {{vm.dialogMessage}}
+                </div>
             </div>
         </div>
+
         ~[wc:admin_footer_css]
     </body>
 
